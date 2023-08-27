@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import apiService from "../api/apiService";
 import { API_KEY } from "../api/config";
-import Grid from "@mui/material/Grid";
 import TrendingCardGroup from "../components/TrendingCardGroup";
 import Category from "../components/Category";
+import Grid from "@mui/material/Grid";
 
 function HomePage() {
   const [loadingTrending, setLoadingTrending] = useState();

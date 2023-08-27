@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import apiService from "../api/apiService";
 import { API_KEY } from "../api/config";
-import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
-import MovieDetailCard from "../components/MovieDetailCard";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import {Typography, Divider, } from "@mui/material";
+import MovieDetailCard from "../components/MovieDetailCard";
 
 function MovieItemPage() {
   // let location = useLocation();

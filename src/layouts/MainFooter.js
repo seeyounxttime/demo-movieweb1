@@ -11,8 +11,8 @@ function MainFooter() {
       mt={2}
     >
       {"Copyright © "}
-      <Link color="inherit" href="https://github.com/">
-        wiredlime
+      <Link color="inherit" href="https://github.com/seeyounxttime/demo-movieweb">
+        hiiromasamune
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}

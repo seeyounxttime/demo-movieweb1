@@ -1,12 +1,7 @@
 import React from "react";
-
-import Grid from "@mui/material/Grid";
 import MovieCard from "../components/MovieCard";
-import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
-
+import { Grid, Typography, Divider } from "@mui/material";
 //APIKEY TRONG ENV
-
 function FavoritePage() {
   // let { favMovies, setfavMovies } = useFavMovies();
   let list = JSON.parse(localStorage.getItem("fav"));
