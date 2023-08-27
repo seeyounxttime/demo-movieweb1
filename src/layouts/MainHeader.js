@@ -9,13 +9,11 @@ import {
   Menu,
 } from "@mui/material";
 import MovieSearchBar from "../components/MovieSearchBar";
-import {
-  AccountCircle,
-  MoreIcon,
-  MovieTwoToneIcon,
-  StarIcon,
-} from "@mui/icons-material";
-import { YouTubeIcon } from "@mui/icons-material/YouTube";
+import YouTubeIcon from "@mui/icons-material/YouTube";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import MoreIcon from "@mui/icons-material/More";
+import MovieTwoToneIcon from "@mui/icons-material/MovieTwoTone";
+import StarIcon from "@mui/icons-material/Star";
 import { useAuth } from "../contexts/AuthContext";
 import { Link, useLocation } from "react-router-dom";
 
@@ -140,7 +138,7 @@ export default function PrimarySearchAppBar() {
           disableRipple={true}
           aria-haspopup="true"
           color="inherit"
-          children={<AccountCircle />}
+          children={<AccountCircleIcon />}
         />
 
         <p>Profile</p>
@@ -188,7 +186,7 @@ export default function PrimarySearchAppBar() {
               aria-haspopup="true"
               onClick={handleProfileMenuOpen}
               color="inherit"
-              children={<AccountCircle />}
+              children={<AccountCircleIcon />}
             />
           </Box>
           <Box sx={{ display: { xs: "flex", md: "none" } }}>
