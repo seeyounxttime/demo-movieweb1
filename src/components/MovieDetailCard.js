@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-// import apiService from "../api/apiService";
-// import { API_KEY } from "../api/config";
+import apiService from "../api/apiService";
+import { API_KEY } from "../api/config";
 import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
@@ -13,7 +13,6 @@ import { useParams } from "react-router-dom";
 import StarIcon from "@mui/icons-material/Star";
 import IconButton from "@mui/material/IconButton";
 import Skeleton from "@mui/material/Skeleton";
-// import VideoPlayer from "./VideoPlayer";
 
 function MovieDetailCard({ movieDetail, loading }) {
   let { movieId } = useParams();
@@ -214,11 +213,6 @@ function MovieDetailCard({ movieDetail, loading }) {
                   {`${movieDetail.vote_average}`}
                 </Typography>
               </Box>
-              <Stack>
-                {/* {movieDetail.videos.results?.map((item) => (
-                  <VideoPlayer linkKey={item.key} />
-                ))} */}
-              </Stack>
             </Stack>
           </Stack>
         </Stack>

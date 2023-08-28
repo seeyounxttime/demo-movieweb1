@@ -1,27 +1,25 @@
-import React, { useState } from "react";
-import {
-  AppBar,
-  Box,
-  Toolbar,
-  IconButton,
-  Button,
-  MenuItem,
-  Menu,
-} from "@mui/material";
+import React from "react";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import Button from "@mui/material/Button";
+import MenuItem from "@mui/material/MenuItem";
+import Menu from "@mui/material/Menu";
 import MovieSearchBar from "../components/MovieSearchBar";
-import YouTubeIcon from "@mui/icons-material/YouTube";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import MoreIcon from "@mui/icons-material/More";
+import AccountCircle from "@mui/icons-material/AccountCircle";
+import MoreIcon from "@mui/icons-material/MoreVert";
 import MovieTwoToneIcon from "@mui/icons-material/MovieTwoTone";
+import YouTubeIcon from "@mui/icons-material/YouTube";
 import StarIcon from "@mui/icons-material/Star";
 import { useAuth } from "../contexts/AuthContext";
 import { Link, useLocation } from "react-router-dom";
 
-export default function PrimarySearchAppBar() {
+function PrimarySearchAppBar() {
   let location = useLocation();
   let auth = useAuth();
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -44,7 +42,7 @@ export default function PrimarySearchAppBar() {
     setMobileMoreAnchorEl(event.currentTarget);
   };
   const handleLogout = () => {
-    handleMenuClose(); //menu đóng trước khi đăng xuất để không hiện bảng đăng nhập
+    handleMenuClose(); //menu close before signout so that login won't pop up.
     auth.signout();
   };
   const menuId = "primary-search-account-menu";
@@ -138,7 +136,7 @@ export default function PrimarySearchAppBar() {
           disableRipple={true}
           aria-haspopup="true"
           color="inherit"
-          children={<AccountCircleIcon />}
+          children={<AccountCircle />}
         />
 
         <p>Profile</p>
@@ -186,7 +184,7 @@ export default function PrimarySearchAppBar() {
               aria-haspopup="true"
               onClick={handleProfileMenuOpen}
               color="inherit"
-              children={<AccountCircleIcon />}
+              children={<AccountCircle />}
             />
           </Box>
           <Box sx={{ display: { xs: "flex", md: "none" } }}>
@@ -208,3 +206,5 @@ export default function PrimarySearchAppBar() {
     </Box>
   );
 }
+
+export default PrimarySearchAppBar;

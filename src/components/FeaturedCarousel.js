@@ -1,21 +1,18 @@
 import React, { useState, useEffect } from "react";
 import Carousel from "react-material-ui-carousel";
+import Paper from "@mui/material/Paper";
 import apiService from "../api/apiService";
 import { API_KEY } from "../api/config";
-import {
-  Box,
-  Stack,
-  Paper,
-  Typography,
-  ListItemButton,
-  Skeleton,
-} from "@mui/material";
-import { RecommendIcon, FavoriteIcon } from "@mui/icons-material";
+import { Box, Stack } from "@mui/material";
+import Typography from "@mui/material/Typography";
+import ListItemButton from "@mui/material/ListItemButton";
+import RecommendIcon from "@mui/icons-material/Recommend";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import Skeleton from "@mui/material/Skeleton";
 
 function FeaturedCarousel(props) {
-  const [cutInitial, setCutInitial] = useState([]);
+  const [cutInitial, setcutInitial] = useState([]);
   const [loading, setLoading] = useState();
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -25,16 +22,14 @@ function FeaturedCarousel(props) {
         );
         const result = res.data.results;
 
-        setCutInitial([...result].splice(12, 8));
-        // thay đổi các phần tử trong mảng bằng cách xóa bỏ hoặc thay thế các phần tử hiện có, hoặc thêm phần tử mới vào vị trí xác định
+        setcutInitial([...result].splice(12, 8));
         setLoading(false);
-      } catch (err) {
-        console.log(err.message);
+      } catch (e) {
+        console.log(e.message);
       }
     };
     fetchData();
   }, []);
-
   const detailSkeleton = (
     <Stack spacing={1}>
       <Skeleton variant="text" />
@@ -44,8 +39,8 @@ function FeaturedCarousel(props) {
   return (
     <Carousel>
       {loading
-        ? cutInitial.map((item, index) => detailSkeleton)
-        : cutInitial.map((item, index) => <Item key={index} item={item} />)}
+        ? cutInitial.map((item, i) => detailSkeleton)
+        : cutInitial.map((item, i) => <Item key={i} item={item} />)}
     </Carousel>
   );
 }
@@ -54,7 +49,7 @@ function Item(props) {
   return (
     <Box
       display="flex"
-      flex-direction="column"
+      flexDirection="column"
       justifyContent="flex-end"
       sx={{
         backgroundImage: `url(https://image.tmdb.org/t/p/original${props.item.backdrop_path})`,
@@ -67,15 +62,16 @@ function Item(props) {
         <ListItemButton>
           <Stack
             display="flex"
-            flexWrap="nowrap"
+            flexWrap="no-wrap"
             sx={{ height: "20%", width: "50%" }}
           >
-            {/* // Item Overview --------- */}
+            {/* //------Item Overview */}
             <Typography variant="h5" mb={1}>
               {props.item.original_name}
             </Typography>
             <Typography variant="caption">{props.item.overview}</Typography>
-            {/* // Item Rating ---------  */}
+
+            {/* //------Item Rating */}
             <Stack flexDirection="row" justifyContent="flex-start" mt={1}>
               <Box
                 display="flex"

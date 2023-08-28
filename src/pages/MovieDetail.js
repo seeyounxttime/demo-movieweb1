@@ -3,7 +3,7 @@ import apiService from "../api/apiService";
 import { API_KEY } from "../api/config";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import {Typography, Divider, } from "@mui/material";
+import { Typography, Divider } from "@mui/material";
 import MovieDetailCard from "../components/MovieDetailCard";
 
 function MovieItemPage() {

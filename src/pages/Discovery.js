@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from "react";
 import apiService from "../api/apiService";
 import { API_KEY } from "../api/config";
-import {
-  Grid,
-  Stack,
-  Typography,
-  Divider,
-  Pagination,
-  PaginationItem,
-  Skeleton,
-} from "@mui/material";
+import Grid from "@mui/material/Grid";
+import Stack from "@mui/material/Stack";
 import MovieCard from "../components/MovieCard";
+import Typography from "@mui/material/Typography";
+import Divider from "@mui/material/Divider";
+import Pagination from "@mui/material/Pagination";
+import PaginationItem from "@mui/material/PaginationItem";
 import { Link, useParams } from "react-router-dom";
+import Skeleton from "@mui/material/Skeleton";
 //APIKEY TRONG ENV
 function DiscoveryPage() {
   const [loading, setLoading] = useState();

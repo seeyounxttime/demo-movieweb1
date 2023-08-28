@@ -1,18 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import apiService from "../api/apiService";
 import { API_KEY } from "../api/config";
-import {
-  Grid,
-  Stack,
-  Box,
-  Typography,
-  Divider,
-  ListItemText,
-  ListItemButton,
-  Skeleton,
-} from "@mui/material";
-import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
+import Grid from "@mui/material/Grid";
 import MovieCard from "./MovieCard";
+import Stack from "@mui/material/Stack";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Divider from "@mui/material/Divider";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemButton from "@mui/material/ListItemButton";
+import Skeleton from "@mui/material/Skeleton";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 const yearList = [
   { id: 1999, label: "1999" },
@@ -41,13 +39,12 @@ function Category() {
         );
         setGenresList(res.data.genres);
         setLoading(false);
-      } catch (err) {
-        console.log(err.message);
+      } catch (e) {
+        console.log(e.message);
       }
     };
     fetchData();
   }, []);
-
   useEffect(() => {
     const fetchData = async () => {
       let url = `discover/movie?api_key=${API_KEY}&language=en-US&append_to_response=videos`;
@@ -65,8 +62,8 @@ function Category() {
         }
 
         setLoading(false);
-      } catch (err) {
-        console.log(err.message);
+      } catch (e) {
+        console.log(e.message);
       }
     };
     fetchData();
@@ -88,7 +85,7 @@ function Category() {
       <Divider />
       <Stack flexDirection="row" width="100%" justifyContent="space-between">
         <Stack minWidth="150px" width={{ xs: "10%" }}>
-          {/* Genres ------------- */}
+          {/* Genres-------- */}
           <Box>
             <ListItemButton
               alignItems="flex-start"
@@ -97,6 +94,7 @@ function Category() {
                 pr: 2,
                 pt: 2.5,
                 pb: openGenres ? 0 : 2.5,
+
                 "&:hover, &:focus": {
                   "& svg": { opacity: openGenres ? 1 : 0 },
                 },
@@ -119,7 +117,7 @@ function Category() {
                 }}
                 sx={{ my: 0 }}
               />
-              <KeyboardArrowDown
+              <KeyboardArrowDownIcon
                 sx={{
                   mr: -1,
                   opacity: 0,
@@ -136,8 +134,10 @@ function Category() {
                   sx={{
                     py: 0,
                     minHeight: 40,
-                    color: "rgba(255,255,255,0.8)",
-                    "&:focus": { backgroundColor: "rgba(255,255,255,0.1)" },
+                    color: "rgba(255,255,255,.8)",
+                    "&:focus": {
+                      backgroundColor: "rgba(225,0,0,0.1)",
+                    },
                   }}
                 >
                   <ListItemText
@@ -151,13 +151,13 @@ function Category() {
               ))}
             <Divider sx={{ marginTop: 3 }} />
           </Box>
-          {/* Years ------------- */}
+          {/* Years-------- */}
           <Box>
             <ListItemButton
               alignItems="flex-start"
               onClick={() => setOpenYear(!openYear)}
               sx={{
-                pr: 2,
+                // pr: 2,
                 pt: 2.5,
                 pb: openYear ? 0 : 2.5,
                 "&:hover, &:focus": {
@@ -173,7 +173,7 @@ function Category() {
                   lineHeight: "20px",
                   mb: "2px",
                 }}
-                secondary="Latest and oldest edition."
+                secondary="Lastest and oldest edition."
                 secondaryTypographyProps={{
                   noWrap: true,
                   fontSize: 12,
@@ -182,9 +182,9 @@ function Category() {
                 }}
                 sx={{ my: 0 }}
               />
-              <KeyboardArrowDown
+              <KeyboardArrowDownIcon
                 sx={{
-                  mr: -1,
+                  // mr: -1,
                   opacity: 0,
                   transform: openYear ? "rotate(-180deg)" : "rotate(0)",
                   transition: "0.2s",
@@ -194,17 +194,12 @@ function Category() {
             {openYear &&
               yearList.map((item) => (
                 <ListItemButton
-                  onClick={() => setGenreId(item.id)}
+                  onClick={() => setYearId(item.id)}
                   key={item.id}
-                  sx={{
-                    py: 0,
-                    minHeight: 40,
-                    color: "rgba(255,255,255,0.8)",
-                    "&:focus": { backgroundColor: "rgba(255,255,255,0.1)" },
-                  }}
+                  sx={{ py: 0, minHeight: 40, color: "rgba(255,255,255,.8)" }}
                 >
                   <ListItemText
-                    primary={item.name}
+                    primary={item.label}
                     primaryTypographyProps={{
                       fontSize: 16,
                       fontWeight: "light",
@@ -215,6 +210,7 @@ function Category() {
             <Divider sx={{ marginTop: 3 }} />
           </Box>
         </Stack>
+
         <Grid container direction="row" spacing={2} mt={2}>
           {loading
             ? placeholder.map((item) => (

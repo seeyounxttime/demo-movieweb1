@@ -1,4 +1,3 @@
-import React from "react";
 import { useFormContext, Controller } from "react-hook-form";
 import { Checkbox, FormControlLabel } from "@mui/material";
 
@@ -14,9 +13,8 @@ function FCheckbox({ name, label, ...other }) {
           render={({ field }) => <Checkbox {...field} checked={field.value} />}
         />
       }
-      // {...other}
+      {...other}
     />
   );
 }
-
 export default FCheckbox;

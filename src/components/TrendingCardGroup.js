@@ -1,14 +1,11 @@
 import React, { useState } from "react";
-import {
-  Grid,
-  Typography,
-  PaginationItem,
-  Divider,
-  Skeleton,
-  Stack,
-} from "@mui/material";
+import Grid from "@mui/material/Grid";
+import Stack from "@mui/material/Stack";
 import MovieCard from "./MovieCard";
-
+import Typography from "@mui/material/Typography";
+import PaginationItem from "@mui/material/PaginationItem";
+import Divider from "@mui/material/Divider";
+import Skeleton from "@mui/material/Skeleton";
 function TrendingCardGroup({ trendingList, cutInitial, loadingTrending }) {
   const [cutList, setCutList] = useState();
   const [copiedList, setcopiedList] = useState([]);

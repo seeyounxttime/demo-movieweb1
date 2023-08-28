@@ -1,7 +1,7 @@
-import * as React from "react";
+import React from "react";
 import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
-import Homepage from "../pages/HomePage";
+import HomePage from "../pages/HomePage";
 import Discovery from "../pages/Discovery";
 import FormPage from "../pages/Form";
 import MovieDetail from "../pages/MovieDetail";
@@ -16,7 +16,10 @@ function Router() {
     let auth = useAuth();
     console.log("user status:", auth.user);
     if (!auth.user) {
-      // chuyển về lại trang đăng nhập nhưng vẫn lưu vị trí hiện tại
+      // Redirect them to the /login page, but save the current location they were
+      // trying to go to when they were redirected. This allows us to send them
+      // along to that page after they login, which is a nicer user experience
+      // than dropping them off on the home page.
 
       return <Navigate to="/form" state={{ from: location }} replace />;
     }
@@ -26,7 +29,7 @@ function Router() {
     <>
       <Routes location={state?.backgroundLocation || location}>
         <Route path="/" element={<MainLayout />}>
-          <Route index element={<Homepage />} />
+          <Route index element={<HomePage />} />
           <Route path="discovery/:pageId" element={<Discovery />} />
           <Route path="/movie/:movieId" element={<MovieDetail />} />
           <Route path="/form" element={<FormPage />} />
