@@ -4,12 +4,11 @@ import AppBar from "@mui/material/AppBar";
 
 import CssBaseline from "@mui/material/CssBaseline";
 import useScrollTrigger from "@mui/material/useScrollTrigger";
-import { Stack } from "@mui/system";
+
 import Container from "@mui/material/Container";
 import MainHeader from "../layouts/MainHeader";
-import { useParams } from "react-router";
-import MovieDetail from "../components/MovieDetail";
 import MainFooter from "../layouts/MainFooter";
+import LoginModal from "../form/LoginModal";
 
 function ElevationScroll(props) {
   const { children, window } = props;
@@ -30,9 +29,7 @@ ElevationScroll.propTypes = {
   window: PropTypes.func,
 };
 
-function ElevateAppBar(props) {
-  const { movieId } = useParams();
-
+export default function LoginPage(props) {
   return (
     <React.Fragment>
       <CssBaseline />
@@ -41,25 +38,15 @@ function ElevateAppBar(props) {
           <MainHeader />
         </AppBar>
       </ElevationScroll>
-      <Stack
-        className="outerContainer"
-        sx={{ backgroundColor: "primary.light" }}
-        paddingTop="0.5rem"
-        height="100vh"
+      <Container
+        sx={{
+          backgroundColor: "primary.light",
+          background: `url("https://images.thedirect.com/media/article_full/netflix-cancelled-shows.jpg?imgeng=cmpr_75/")`,
+        }}
       >
-        <Container
-          sx={{
-            backgroundColor: "primary.light",
-            color: "primary.contrastText",
-            paddingTop: 0,
-          }}
-        >
-          <MovieDetail id={movieId} />
-          <MainFooter />
-        </Container>
-      </Stack>
+        <LoginModal />
+        <MainFooter />
+      </Container>
     </React.Fragment>
   );
 }
-
-export default ElevateAppBar;

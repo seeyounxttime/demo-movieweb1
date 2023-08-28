@@ -5,14 +5,14 @@ function MainFooter() {
   return (
     <Typography
       variant="body2"
-      color="text.secondary"
+      color="primary.contrastText"
       align="center"
       p={1}
       mt={2}
     >
       {"Copyright © "}
-      <Link color="inherit" href="https://github.com/seeyounxttime/demo-movieweb">
-        hiiromasamune
+      <Link color="inherit" href="https://www.coderschool.vn">
+        wiredlime
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}

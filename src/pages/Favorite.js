@@ -1,31 +1,58 @@
-import React from "react";
+import * as React from "react";
+import PropTypes from "prop-types";
+import AppBar from "@mui/material/AppBar";
+import CssBaseline from "@mui/material/CssBaseline";
+import useScrollTrigger from "@mui/material/useScrollTrigger";
+import Container from "@mui/material/Container";
+import MainHeader from "../layouts/MainHeader";
+import { Stack } from "@mui/system";
+import ShowMovies from "../components/ShowMovies";
+import MainFooter from "../layouts/MainFooter";
+import { Typography } from "@mui/material";
 
-import Grid from "@mui/material/Grid";
-import MovieCard from "../components/MovieCard";
-import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
+function ElevationScroll(props) {
+  const { children, window } = props;
+  const trigger = useScrollTrigger({
+    disableHysteresis: true,
+    threshold: 0,
+    target: window ? window() : undefined,
+  });
 
-//APIKEY TRONG ENV
-
-function FavoritePage() {
-  // let { favMovies, setfavMovies } = useFavMovies();
-  let list = JSON.parse(localStorage.getItem("fav"));
-
-  return (
-    <>
-      <Typography variant="h5" mb={2}>
-        YOUR FAVORITES
-      </Typography>
-      <Divider />
-      <Grid container direction="row" spacing={5} mt={2}>
-        {list?.map((item) => (
-          <Grid key={item.id} item xs={6} sm={4} md={3}>
-            <MovieCard item={item} />
-          </Grid>
-        ))}
-      </Grid>
-    </>
-  );
+  return React.cloneElement(children, {
+    elevation: trigger ? 4 : 0,
+  });
 }
 
-export default FavoritePage;
+ElevationScroll.propTypes = {
+  children: PropTypes.element.isRequired,
+  window: PropTypes.func,
+};
+
+export default function MyFavorites(props) {
+  let myFavList = JSON.parse(localStorage.getItem("items"));
+  return (
+    <React.Fragment>
+      <CssBaseline />
+      <ElevationScroll {...props}>
+        <AppBar sx={{ alignItems: { xl: "center", md: "center" } }}>
+          <MainHeader />
+        </AppBar>
+      </ElevationScroll>
+      <Stack
+        className="outerContainer"
+        sx={{ backgroundColor: "primary.light" }}
+        paddingTop="0.5rem"
+        height="100vh"
+      >
+        <Container sx={{ backgroundColor: "primary.light" }}>
+          <Typography sx={{ color: "white", paddingTop: 15 }}>
+            MY FAVORITE MOVIES
+          </Typography>
+          <ShowMovies moviesList={myFavList} />
+
+          <MainFooter />
+        </Container>
+      </Stack>
+    </React.Fragment>
+  );
+}

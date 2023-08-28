@@ -1,9 +1,10 @@
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
-import Router from "./routes/Router";
+import Router from "./routes";
+
 import ThemeProvider from "./contexts/ThemeProvider";
-import { AuthProvider } from "./contexts/AuthContext";
-import "./App.css";
+import AuthProvider from "./auth/AuthProvider";
+import "./style.css";
 
 function App() {
   return (

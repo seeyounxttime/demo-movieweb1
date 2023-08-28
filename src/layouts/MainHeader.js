@@ -1,210 +1,209 @@
-import React from "react";
-import AppBar from "@mui/material/AppBar";
+import * as React from "react";
+import { useContext, useState } from "react";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
-import Button from "@mui/material/Button";
-import MenuItem from "@mui/material/MenuItem";
+import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
-import MovieSearchBar from "../components/MovieSearchBar";
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import MoreIcon from "@mui/icons-material/MoreVert";
-import MovieTwoToneIcon from "@mui/icons-material/MovieTwoTone";
-import YouTubeIcon from "@mui/icons-material/YouTube";
-import StarIcon from "@mui/icons-material/Star";
-import { useAuth } from "../contexts/AuthContext";
-import { Link, useLocation } from "react-router-dom";
+import Tooltip from "@mui/material/Tooltip";
+import MenuItem from "@mui/material/MenuItem";
+import Logo from "../components/Logo";
+import { useNavigate, useLocation } from "react-router-dom";
+import SearchIcon from "@mui/icons-material/Search";
+import { styled, alpha } from "@mui/material/styles";
+import InputBase from "@mui/material/InputBase";
+import AuthContext from "../auth/AuthContext";
+import Category from "../components/Category";
 
-function PrimarySearchAppBar() {
-  let location = useLocation();
-  let auth = useAuth();
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+const settings = ["Profile", "Account", "Logout"];
 
-  const isMenuOpen = Boolean(anchorEl);
-  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+const Search = styled("div")(({ theme }) => ({
+  position: "relative",
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: alpha(theme.palette.common.white, 0.15),
+  "&:hover": {
+    backgroundColor: alpha(theme.palette.common.white, 0.25),
+  },
+  marginLeft: 0,
+  width: "100%",
+  [theme.breakpoints.up("sm")]: {
+    marginLeft: theme.spacing(1),
+    width: "auto",
+  },
+}));
 
-  const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
+const SearchIconWrapper = styled("div")(({ theme }) => ({
+  padding: theme.spacing(0, 2),
+  height: "100%",
+  position: "absolute",
+  pointerEvents: "none",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+}));
+
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+  color: "inherit",
+  "& .MuiInputBase-input": {
+    padding: theme.spacing(1, 1, 1, 0),
+    // vertical padding + font size from searchIcon
+    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    transition: theme.transitions.create("width"),
+    width: "100%",
+    [theme.breakpoints.up("sm")]: {
+      width: "12ch",
+      "&:focus": {
+        width: "20ch",
+      },
+    },
+  },
+}));
+
+function MainHeader() {
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const auth = useContext(AuthContext);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const currentPage = location.pathname;
+
+  const [searchValue, setSearchValue] = useState("");
+  function handleOnChange(event) {
+    let value = event.target.value;
+    setSearchValue(value);
+  }
+
+  // since styled("div") not "form", we cannot use onSubmit
+  const handleKeyDown = (event) => {
+    if (auth.user) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        let value = event.target.value;
+        setSearchValue(value);
+        navigate(`/search?keyword=${value}`);
+      }
+    }
   };
 
-  const handleMobileMenuClose = () => {
-    setMobileMoreAnchorEl(null);
+  const handleOpen = () => {
+    navigate("/login");
   };
 
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-    handleMobileMenuClose();
-    console.log(location);
+  const handleOpenUserMenu = (event) => {
+    event.preventDefault();
+    setAnchorElUser(event.currentTarget);
   };
 
-  const handleMobileMenuOpen = (event) => {
-    setMobileMoreAnchorEl(event.currentTarget);
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+    auth.logout(() => {
+      navigate(currentPage, { replace: true });
+    });
   };
-  const handleLogout = () => {
-    handleMenuClose(); //menu close before signout so that login won't pop up.
-    auth.signout();
+  const handleMyFavList = () => {
+    navigate("/myfavorite");
+    setAnchorElUser(null);
   };
-  const menuId = "primary-search-account-menu";
-  const renderMenu = (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
-    >
-      {auth.user ? (
-        <>
-          <Button
-            color="inherit"
-            component={Link}
-            to="/favorite"
-            onClick={handleMenuClose}
-          >
-            {auth.user}
-          </Button>
-          <Button color="inherit" onClick={() => handleLogout()}>
-            Logout
-          </Button>
-        </>
-      ) : (
-        <Button
-          color="inherit"
-          component={Link}
-          to="/form"
-          state={{ backgroundLocation: location, from: location }}
-          onClick={handleMenuClose}
-        >
-          Login
-        </Button>
-      )}
-    </Menu>
-  );
-
-  const mobileMenuId = "primary-search-account-menu-mobile";
-  const renderMobileMenu = (
-    <Menu
-      anchorEl={mobileMoreAnchorEl}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      id={mobileMenuId}
-      keepMounted
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      open={isMobileMenuOpen}
-      onClose={handleMobileMenuClose}
-    >
-      <MenuItem component={Link} to="/discovery/1">
-        <IconButton
-          size="large"
-          color="inherit"
-          disableRipple={true}
-          children={<YouTubeIcon />}
-        />
-        <p>Discovery</p>
-      </MenuItem>
-
-      <MenuItem component={Link} to="/favorite">
-        <IconButton
-          size="large"
-          color="inherit"
-          disableRipple={true}
-          children={<StarIcon />}
-        />
-
-        <p>Favorite</p>
-      </MenuItem>
-      <MenuItem component={Link} to="/form">
-        <IconButton
-          size="large"
-          //cool styling ui props
-          aria-label="account of current user"
-          aria-controls={menuId}
-          disableRipple={true}
-          aria-haspopup="true"
-          color="inherit"
-          children={<AccountCircle />}
-        />
-
-        <p>Profile</p>
-      </MenuItem>
-    </Menu>
-  );
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
-        <Toolbar>
-          <IconButton
-            size="large"
-            color="inherit"
-            component={Link}
-            to="/"
-            children={<MovieTwoToneIcon />}
-          />
-          <MovieSearchBar />
-          <Box sx={{ flexGrow: 1 }} />
-          <Box
-            sx={{
-              display: { xs: "none", md: "flex" },
+    <Toolbar
+      sx={{
+        width: { xs: "100%", xl: "1200px" },
+        display: "flex",
+        justifyContent: {
+          xs: "center",
+          md: "space-between",
+          xl: "space-between",
+        },
+        flexDirection: { xs: "row" },
+      }}
+      disableGutters
+    >
+      <Box sx={{ display: { xs: "flex", md: "flex" }, ml: 2, mr: 1 }}>
+        <Category />
+      </Box>
+      <Logo
+        sx={{
+          mr: 2,
+          display: { xs: "flex", md: "flex" },
+          width: { xs: "4rem", md: "8rem" },
+        }}
+      />
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          mr: 1,
+          width: { xs: "250px" },
+        }}
+      >
+        <Search>
+          <SearchIconWrapper>
+            <SearchIcon />
+          </SearchIconWrapper>
+          <StyledInputBase
+            placeholder="Search…"
+            inputProps={{ "aria-label": "search" }}
+            value={searchValue}
+            onChange={(event) => {
+              handleOnChange(event);
             }}
-          >
+            onKeyDown={handleKeyDown}
+          />
+        </Search>
+        <Box>
+          {auth?.user ? (
+            <>
+              <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, ml: 1 }}>
+                  <img src="../lock2.png" alt="" width="34px" height="34px" />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{ mt: "45px" }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                <MenuItem key="fav" onClick={handleMyFavList}>
+                  <Typography textAlign="center">MyFavorites</Typography>
+                </MenuItem>
+                {settings.map((setting) => (
+                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                    <Typography textAlign="center">{setting}</Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </>
+          ) : (
             <IconButton
-              component={Link}
-              to="/favorite"
               size="large"
+              edge="start"
               color="inherit"
-              children={<StarIcon />}
-            />
-            <IconButton
-              component={Link}
-              to="/discovery/1"
-              size="large"
-              color="inherit"
-              children={<YouTubeIcon />}
-            />
-            <IconButton
-              size="large"
-              //cool styling ui props
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit"
-              children={<AccountCircle />}
-            />
-          </Box>
-          <Box sx={{ display: { xs: "flex", md: "none" } }}>
-            <IconButton
-              size="large"
-              aria-label="show more"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              onClick={handleMobileMenuOpen}
-              color="inherit"
+              aria-label="open drawer"
+              sx={{ ml: 1, right: 0, fontSize: "1rem", gap: "5px" }}
+              onClick={handleOpen}
             >
-              <MoreIcon />
+              <img
+                src="../arrow-right-3781.svg"
+                alt=""
+                width="25px"
+                height="25px"
+              />
             </IconButton>
-          </Box>
-        </Toolbar>
-      </AppBar>
-      {renderMobileMenu}
-      {renderMenu}
-    </Box>
+          )}
+        </Box>
+      </Box>
+    </Toolbar>
   );
 }
-
-export default PrimarySearchAppBar;
+export default MainHeader;
