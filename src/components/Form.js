@@ -26,8 +26,8 @@ function Form() {
     navigate(-1);
   }
   const defaultValues = {
-    email: "naruto@cs.vn",
-    password: "konoha",
+    email: "minhtri123@gmail.com",
+    password: "123456",
     remember: true,
   };
   const methods = useForm({ defaultValues });
