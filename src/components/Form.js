@@ -33,8 +33,6 @@ function Form() {
   const methods = useForm({ defaultValues });
   const {
     handleSubmit,
-    setError,
-    control,
     formState: { errors, isSubmitting },
   } = methods;
   const [showPassword, setShowPassword] = useState(false);

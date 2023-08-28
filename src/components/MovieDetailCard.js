@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import apiService from "../api/apiService";
-import { API_KEY } from "../api/config";
+// import apiService from "../api/apiService";
+// import { API_KEY } from "../api/config";
 import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";

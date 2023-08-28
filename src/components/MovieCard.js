@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
@@ -8,12 +8,10 @@ import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import RecommendIcon from "@mui/icons-material/Recommend";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import { Link } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import Link from "react-router-dom";
 import "../App.css";
 
 function MovieCard({ item }) {
-  let location = useLocation();
   return (
     <Card className="card" sx={{ width: 200, borderRadius: "3px" }}>
       <CardActionArea LinkComponent={Link} to={`/movie/${item.id}`}>
