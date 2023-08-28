@@ -8,7 +8,7 @@ import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import RecommendIcon from "@mui/icons-material/Recommend";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import Link from "react-router-dom";
+import { Link } from "react-router-dom";
 import "../App.css";
 
 function MovieCard({ item }) {
