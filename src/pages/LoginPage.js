@@ -1,52 +1,52 @@
-import * as React from "react";
-import PropTypes from "prop-types";
-import AppBar from "@mui/material/AppBar";
+import { Button, Stack, Typography } from "@mui/material";
+import React from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { FormProvider, FTextField } from "../components/form";
+import useAuth from "../hooks/useAuth";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
 
-import CssBaseline from "@mui/material/CssBaseline";
-import useScrollTrigger from "@mui/material/useScrollTrigger";
-
-import Container from "@mui/material/Container";
-import MainHeader from "../layouts/MainHeader";
-import MainFooter from "../layouts/MainFooter";
-import LoginModal from "../form/LoginModal";
-
-function ElevationScroll(props) {
-  const { children, window } = props;
-
-  const trigger = useScrollTrigger({
-    disableHysteresis: true,
-    threshold: 0,
-    target: window ? window() : undefined,
-  });
-
-  return React.cloneElement(children, {
-    elevation: trigger ? 4 : 0,
-  });
-}
-
-ElevationScroll.propTypes = {
-  children: PropTypes.element.isRequired,
-  window: PropTypes.func,
+const LoginSchema = Yup.object().shape({
+  username: Yup.string().required("Username is required"),
+});
+const defaultValues = {
+  username: "",
 };
 
-export default function LoginPage(props) {
+function LoginPage() {
+  let navigate = useNavigate();
+  let location = useLocation();
+  let auth = useAuth();
+
+  const methods = useForm({
+    resolver: yupResolver(LoginSchema),
+    defaultValues,
+  });
+  const { handleSubmit } = methods;
+
+  const onSubmit = async (data) => {
+    let from = location.state?.from?.pathname || "/";
+    let username = data.username;
+
+    auth.login(username, () => {
+      navigate(from, { replace: true });
+    });
+  };
+
   return (
-    <React.Fragment>
-      <CssBaseline />
-      <ElevationScroll {...props}>
-        <AppBar sx={{ alignItems: { xl: "center", md: "center" } }}>
-          <MainHeader />
-        </AppBar>
-      </ElevationScroll>
-      <Container
-        sx={{
-          backgroundColor: "primary.light",
-          background: `url("https://images.thedirect.com/media/article_full/netflix-cancelled-shows.jpg?imgeng=cmpr_75/")`,
-        }}
-      >
-        <LoginModal />
-        <MainFooter />
-      </Container>
-    </React.Fragment>
+    <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+      <Stack spacing={3} sx={{ minWidth: "350px" }}>
+        <Typography variant="h4" textAlign="center">
+          Ready to watch?
+        </Typography>
+        <FTextField name="username" label="Username" />
+        <Button type="submit" variant="contained" color="error">
+          Log In
+        </Button>
+      </Stack>
+    </FormProvider>
   );
 }
+
+export default LoginPage;

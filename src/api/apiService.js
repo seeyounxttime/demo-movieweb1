@@ -1,30 +1,31 @@
+import { BASE_URL, API_KEY } from "./config";
 import axios from "axios";
-import { BASE_URL } from "./config";
 
 const apiService = axios.create({
   baseURL: BASE_URL,
+  apiKey: API_KEY,
 });
 
-apiService.interceptors.request.use(
-  (request) => {
-    console.log("Start Request", request);
-    return request;
-  },
-  function (error) {
-    console.log("REQUEST ERROR", error);
-    return Promise.reject(error);
+export const getDataMovie = async (id) => {
+  try {
+    const url = `/movie/${id}?api_key=${API_KEY}&language=en-US`;
+    const res = await apiService.get(url);
+    return res;
+  } catch (error) {
+    console.log(error.message);
+    return false;
   }
-);
+};
 
-apiService.interceptors.response.use(
-  (response) => {
-    console.log("Response", response);
-    return response;
-  },
-  function (error) {
-    console.log("RESPONSE ERROR", error);
-    return Promise.reject(error);
+export const getSearching = async (q, page) => {
+  try {
+    const res = await apiService.get(
+      `/search/movie?api_key=${API_KEY}&query=${q}&page=${page}`
+    );
+    return res;
+  } catch (error) {
+    console.log(error);
   }
-);
+};
 
 export default apiService;

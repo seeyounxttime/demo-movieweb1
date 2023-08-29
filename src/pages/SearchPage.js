@@ -1,144 +1,81 @@
-import React, { cloneElement } from "react";
-import { useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import AppBar from "@mui/material/AppBar";
-import { Box, CircularProgress } from "@mui/material";
-import CssBaseline from "@mui/material/CssBaseline";
-import useScrollTrigger from "@mui/material/useScrollTrigger";
-import { API_KEY } from "../api/config";
-import apiService from "../api/apiService";
-import Container from "@mui/material/Container";
-import MainHeader from "../layouts/MainHeader";
-import { Stack } from "@mui/system";
-import { useSearchParams } from "react-router-dom";
-import ShowMovies from "../components/ShowMovies";
-import MainFooter from "../layouts/MainFooter";
-import PaginationSearch from "../components/PaginationSearch";
-import { Typography } from "@mui/material";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  useNavigate,
+  useOutletContext,
+  useSearchParams,
+} from "react-router-dom";
+import { Box, Grid, Pagination, Stack, Typography } from "@mui/material";
+import { getSearching } from "../api/apiService";
 
-function ElevationScroll(props) {
-  const { children, window } = props;
-
-  const trigger = useScrollTrigger({
-    disableHysteresis: true,
-    threshold: 0,
-    target: window ? window() : undefined,
-  });
-
-  return cloneElement(children, {
-    elevation: trigger ? 4 : 0,
-  });
-}
-
-ElevationScroll.propTypes = {
-  children: PropTypes.element.isRequired,
-
-  window: PropTypes.func,
-};
-
-function SearchPage(props) {
-  const [searchParams] = useSearchParams();
-  const [loading, setLoading] = useState();
-  const [searchList, setSearchList] = useState([]);
-  const [movies, setMovies] = useState([]);
-  const searchInput = searchParams.get("keyword");
+function SearchPage() {
+  let [searchParams] = useSearchParams();
+  const [searchMovies, setSearchMovies] = useState([]);
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
 
-  function changePage(newPage) {
-    setPage(newPage);
+  const [setIsOpen, setIdMovie] = useOutletContext();
+
+  const navigate = useNavigate();
+  const totalPage = useRef(0);
+  const q = searchParams.get("q");
+
+  if (!q) {
+    navigate("/");
   }
-
   useEffect(() => {
-    const fetchData = async () => {
-      let base = `search/keyword?`;
-      // const origin= `https://api.themoviedb.org/3/search/keyword?query=action&api_key=efafb7eead013aa31662cc51ddcdcbf9`;
-      try {
-        setLoading(true);
-        const fetchData = await apiService.get(
-          `${base}query=${searchInput}&api_key=${API_KEY}`
-        );
-        const keyList = fetchData.data.results;
-        const collection = [];
-        if (keyList) {
-          for (const key of keyList) {
-            const keyword = key.id;
-
-            const res = await apiService.get(
-              `keyword/${keyword}/movies?api_key=${API_KEY}&with_keywords=${keyword}&language=en-US`
-            );
-            const result = res.data.results;
-
-            for (const item of result) {
-              collection.push(item);
-            }
-          }
-          let size = collection.length;
-          setTotalPages(Math.ceil(size / 12));
-          setMovies(collection);
-        }
-        setLoading(false);
-      } catch (e) {
-        console.log(e.message);
-      }
-    };
-    fetchData();
-  }, [searchInput, totalPages]);
-
-  useEffect(() => {
-    let start = (page - 1) * 12;
-    let end = start + 12;
-    setSearchList(movies.slice(start, end));
-  }, [page, movies]);
+    getSearching(q, page).then((res) => {
+      if (!totalPage.current) totalPage.current = res.data.total_pages;
+      setSearchMovies(res.data.results);
+    });
+  }, [q, page]);
 
   return (
-    <React.Fragment>
-      <CssBaseline />
-      <ElevationScroll {...props}>
-        <AppBar sx={{ alignItems: { xl: "center", md: "center" } }}>
-          <MainHeader />
-        </AppBar>
-      </ElevationScroll>
-      <Stack
-        className="outerContainer"
-        sx={{ backgroundColor: "primary.light" }}
-        paddingTop="0.5rem"
-      >
-        <Container sx={{ backgroundColor: "primary.light", paddingTop: 8 }}>
-          {loading ? (
-            <Box
-              sx={{
-                position: "absolute",
-                width: "100%",
-                maxWidth: "1200",
-                height: "100%",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: "primary.light",
-              }}
-            >
-              <CircularProgress sx={{ color: "white" }} />
-            </Box>
-          ) : (
-            <>
-              {searchList.length > 0 ? (
-                <>
-                  <ShowMovies moviesList={searchList} />
-                  <PaginationSearch
-                    PageCount={totalPages}
-                    changePage={changePage}
-                  />
-                </>
-              ) : (
-                <Typography>MOVIE NOT FOUND</Typography>
-              )}
-            </>
-          )}
-          <MainFooter />
-        </Container>
-      </Stack>
-    </React.Fragment>
+    <div>
+      {searchMovies ? (
+        <Box>
+          <Grid container spacing={2} mt={15} pl={3}>
+            {searchMovies?.map((searchMovie, i) => (
+              <Grid
+                key={`${searchMovie?.id}+${i}`}
+                item
+                xs={12}
+                sm={4}
+                md={3}
+                lg={2}
+              >
+                <img
+                  onClick={() => {
+                    setIsOpen(true);
+                    setIdMovie(searchMovie.id);
+                  }}
+                  loading="lazy"
+                  style={{ maxHeight: 300, marginRight: 10 }}
+                  alt={searchMovie?.name}
+                  src={`https://image.tmdb.org/t/p/original${searchMovie?.poster_path}`}
+                />
+              </Grid>
+            ))}
+          </Grid>
+          <Stack alignItems="center" spacing={2}>
+            <Pagination
+              onChange={(event, page) => setPage(page)}
+              count={totalPage?.current}
+              color="secondary"
+            />
+          </Stack>
+        </Box>
+      ) : (
+        <Box>
+          <Typography
+            variant="h5"
+            marginTop={30}
+            color={(theme) => theme.palette.primary.contrastText}
+            textAlign="center"
+          >
+            {`Your search for "${q}" did not have any matches`}
+          </Typography>
+        </Box>
+      )}
+    </div>
   );
 }
 

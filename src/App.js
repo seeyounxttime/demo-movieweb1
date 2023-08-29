@@ -1,20 +1,25 @@
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
 import Router from "./routes";
+import { AuthProvider } from "./contexts/AuthContext";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
 
-import ThemeProvider from "./contexts/ThemeProvider";
-import AuthProvider from "./auth/AuthProvider";
-import "./style.css";
-
+const darkTheme = createTheme({
+  palette: {
+    mode: "dark",
+  },
+});
 function App() {
   return (
-    <BrowserRouter>
-      <ThemeProvider>
-        <AuthProvider>
+    <AuthProvider>
+      <ThemeProvider theme={darkTheme}>
+        <CssBaseline />
+        <BrowserRouter>
           <Router />
-        </AuthProvider>
+        </BrowserRouter>
       </ThemeProvider>
-    </BrowserRouter>
+    </AuthProvider>
   );
 }
 

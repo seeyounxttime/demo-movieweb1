@@ -1,28 +1,38 @@
-import * as React from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
-import MainPage from "../pages/MainPage";
-import GenreGroupPage from "../pages/GenreGroupPage";
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+import BlankLayout from "../layouts/BlankLayout";
+import HomePage from "../pages/HomePage";
+import LoginPage from "../pages/LoginPage";
+import NotFoundPage from "../pages/NotFoundPage";
+import GenrePage from "../pages/GenrePage";
+import RequireAuth from "./RequireAuth";
 import SearchPage from "../pages/SearchPage";
-
-import MovieDetail from "../pages/MovieDetail";
-import LoginModal from "../form/LoginModal";
-import Favorite from "../pages/Favorite";
+import MovieDetail from "../components/MovieDetail";
+import MainLayout from "../layouts/MainLayout";
 
 function Router() {
-  let location = useLocation();
-  let state = location.state;
-
   return (
-    <Routes location={state?.backgroundLocation || location}>
-      <Route path="/" element={<MainPage />}></Route>
-      <Route path="/login" element={<LoginModal />}></Route>
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <RequireAuth>
+            <MainLayout />
+          </RequireAuth>
+        }
+      >
+        <Route path="movie/:movieid" element={<MovieDetail />} />
+        <Route index element={<HomePage />}></Route>
 
-      <Route path="/movie/:movieId" element={<MovieDetail />} />
+        <Route path="genre/:genreid" element={<GenrePage />} />
+        <Route path="search" element={<SearchPage />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Route>
 
-      <Route path="/genre/:genreId" element={<GenreGroupPage />} />
-
-      <Route path="/search" element={<SearchPage />} />
-      <Route path="/myfavorite" element={<Favorite />} />
+      <Route element={<BlankLayout />}>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Route>
     </Routes>
   );
 }

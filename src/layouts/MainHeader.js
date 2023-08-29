@@ -1,21 +1,18 @@
 import * as React from "react";
-import { useContext, useState } from "react";
+import { styled, alpha } from "@mui/material/styles";
+import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import Menu from "@mui/material/Menu";
-import Tooltip from "@mui/material/Tooltip";
-import MenuItem from "@mui/material/MenuItem";
-import Logo from "../components/Logo";
-import { useNavigate, useLocation } from "react-router-dom";
-import SearchIcon from "@mui/icons-material/Search";
-import { styled, alpha } from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
-import AuthContext from "../auth/AuthContext";
-import Category from "../components/Category";
-
-const settings = ["Profile", "Account", "Logout"];
+import SearchIcon from "@mui/icons-material/Search";
+import Logo from "../components/Logo";
+import { Button, Menu, MenuItem } from "@mui/material";
+import useAuth from "../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import GenredList from "../components/GenresList";
+import Avatar from "@mui/material/Avatar";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -59,109 +56,83 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-function MainHeader() {
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const auth = useContext(AuthContext);
+export default function MainHeader() {
+  const [auth2] = React.useState(true);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const { user } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
-  const currentPage = location.pathname;
+  const auth = useAuth();
 
-  const [searchValue, setSearchValue] = useState("");
-  function handleOnChange(event) {
-    let value = event.target.value;
-    setSearchValue(value);
-  }
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
 
-  // since styled("div") not "form", we cannot use onSubmit
-  const handleKeyDown = (event) => {
-    if (auth.user) {
-      if (event.key === "Enter") {
-        event.preventDefault();
-        let value = event.target.value;
-        setSearchValue(value);
-        navigate(`/search?keyword=${value}`);
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  function debounce(func, delay) {
+    let timeout;
+
+    return function executedFunc(...args) {
+      if (timeout) {
+        clearTimeout(timeout);
       }
-    }
+
+      timeout = setTimeout(() => {
+        func(...args);
+        timeout = null;
+      }, delay);
+    };
+  }
+  const handleChange = (e) => {
+    const value = e.target.value;
+    navigate(`search?q=${value}`);
+    console.log("run");
   };
 
-  const handleOpen = () => {
-    navigate("/login");
-  };
-
-  const handleOpenUserMenu = (event) => {
-    event.preventDefault();
-    setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-    auth.logout(() => {
-      navigate(currentPage, { replace: true });
-    });
-  };
-  const handleMyFavList = () => {
-    navigate("/myfavorite");
-    setAnchorElUser(null);
-  };
-
+  const dHandler = debounce(handleChange, 1000);
   return (
-    <Toolbar
-      sx={{
-        width: { xs: "100%", xl: "1200px" },
-        display: "flex",
-        justifyContent: {
-          xs: "center",
-          md: "space-between",
-          xl: "space-between",
-        },
-        flexDirection: { xs: "row" },
-      }}
-      disableGutters
-    >
-      <Box sx={{ display: { xs: "flex", md: "flex" }, ml: 2, mr: 1 }}>
-        <Category />
-      </Box>
-      <Logo
-        sx={{
-          mr: 2,
-          display: { xs: "flex", md: "flex" },
-          width: { xs: "4rem", md: "8rem" },
-        }}
-      />
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          mr: 1,
-          width: { xs: "250px" },
-        }}
-      >
-        <Search>
-          <SearchIconWrapper>
-            <SearchIcon />
-          </SearchIconWrapper>
-          <StyledInputBase
-            placeholder="Search…"
-            inputProps={{ "aria-label": "search" }}
-            value={searchValue}
-            onChange={(event) => {
-              handleOnChange(event);
-            }}
-            onKeyDown={handleKeyDown}
-          />
-        </Search>
-        <Box>
-          {auth?.user ? (
-            <>
-              <Tooltip title="Open settings">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, ml: 1 }}>
-                  <img src="../lock2.png" alt="" width="34px" height="34px" />
-                </IconButton>
-              </Tooltip>
+    <Box sx={{ flexGrow: 1 }}>
+      <AppBar position="fixed">
+        <Toolbar>
+          <Box sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}>
+            <Logo sx={{ display: "flex" }} />
+          </Box>
+          <GenredList />
+
+          <Search>
+            <SearchIconWrapper>
+              <SearchIcon />
+            </SearchIconWrapper>
+            <StyledInputBase
+              onChange={dHandler}
+              id="q"
+              name="q"
+              placeholder="Search…"
+              inputProps={{ "aria-label": "search" }}
+            />
+          </Search>
+          {auth2 && (
+            <div>
+              <IconButton
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleMenu}
+                color="inherit"
+              >
+                <Avatar
+                  variant="square"
+                  src="https://img.freepik.com/free-vector/cute-cat-sitting-cartoon-vector-icon-illustration-animal-nature-icon-concept-isolated-premium-vector-flat-cartoon-style_138676-4148.jpg"
+                />
+                <Typography sx={{ p: 1 }}>{user?.username}</Typography>
+              </IconButton>
               <Menu
-                sx={{ mt: "45px" }}
                 id="menu-appbar"
-                anchorEl={anchorElUser}
+                anchorEl={anchorEl}
                 anchorOrigin={{
                   vertical: "top",
                   horizontal: "right",
@@ -171,39 +142,24 @@ function MainHeader() {
                   vertical: "top",
                   horizontal: "right",
                 }}
-                open={Boolean(anchorElUser)}
-                onClose={handleCloseUserMenu}
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
               >
-                <MenuItem key="fav" onClick={handleMyFavList}>
-                  <Typography textAlign="center">MyFavorites</Typography>
+                <MenuItem onClick={handleClose}>
+                  <Button
+                    onClick={() => {
+                      auth.logout(() => navigate("/"));
+                    }}
+                    sx={{ p: 0, m: 0 }}
+                  >
+                    Sign Out
+                  </Button>
                 </MenuItem>
-                {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    <Typography textAlign="center">{setting}</Typography>
-                  </MenuItem>
-                ))}
               </Menu>
-            </>
-          ) : (
-            <IconButton
-              size="large"
-              edge="start"
-              color="inherit"
-              aria-label="open drawer"
-              sx={{ ml: 1, right: 0, fontSize: "1rem", gap: "5px" }}
-              onClick={handleOpen}
-            >
-              <img
-                src="../arrow-right-3781.svg"
-                alt=""
-                width="25px"
-                height="25px"
-              />
-            </IconButton>
+            </div>
           )}
-        </Box>
-      </Box>
-    </Toolbar>
+        </Toolbar>
+      </AppBar>
+    </Box>
   );
 }
-export default MainHeader;
