@@ -33,7 +33,7 @@ function GenreGroup({ genreId }) {
       }
     };
     fetchData();
-  }, [genreId, genreList, page, totalPages]);
+  }, [genreList, page, totalPages]);
 
   return (
     <>
