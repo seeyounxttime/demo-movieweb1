@@ -16,6 +16,7 @@
     "better-react-carousel": "^1.1.2",
     "firebase": "^10.3.0",
     "lodash": "^4.17.21",
+    "movie-trailer": "^3.0.2",
     "moviedb": "^0.2.12",
     "numeral": "^2.0.6",
     "react": "^18.2.0",
@@ -65,5 +66,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "sass": "^1.66.1",
+    "sass-loader": "^13.3.2",
+    "webpack": "^5.88.2"
   }
 }

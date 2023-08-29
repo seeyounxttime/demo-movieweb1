@@ -1,25 +1,27 @@
-import Button from "../../components/button/Button";
-import { Link, useLocation } from "react-router-dom";
-import { ParentContainer, HomeContainer } from "./Home.styles";
+import React from "react";
+import "./Home.scss";
+import Navbar from "../../components/navbar/Navbar";
+import Featured from "../../components/featured/Featured";
+import requests from "../../requests";
+import Row from "../../components/row/Row";
 
 const Home = () => {
-  const { pathname } = useLocation();
   return (
-    <>
-      {pathname === "/" ? (
-        <ParentContainer>
-          <HomeContainer>
-            <h1>Unlimited movies, TV shows and more.</h1>
-            <h2>Watch anywhere. Cancel anytime.</h2>
-            <Link to="signup">
-              <Button buttonText="Sign Up" signupstyle="50%" />
-            </Link>
-          </HomeContainer>
-        </ParentContainer>
-      ) : (
-        ""
-      )}
-    </>
+    <div className="home">
+      <Navbar />
+      <Featured type="" />
+      <Row
+        title="NETFLIX ORIGINALS"
+        isLargeRow
+        fetchUrl={requests.fetchNetflixOriginals}
+      />
+      <Row title="Trending" fetchUrl={requests.fetchTrending} />
+      <Row title="Top Rated" fetchUrl={requests.fetchTopRated} />
+      <Row title="Action Movies" fetchUrl={requests.fetchActionMovies} />
+      <Row title="Comedy Movies" fetchUrl={requests.fetchComedyMovies} />
+      <Row title="Horror Movies" fetchUrl={requests.fetchHorrorMovies} />
+      <Row title="Romance Movies" fetchUrl={requests.fetchRomanceMovies} />
+    </div>
   );
 };
 
