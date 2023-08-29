@@ -1,25 +1,50 @@
-import React from "react";
-import { BrowserRouter } from "react-router-dom";
-import Router from "./routes";
-import { AuthProvider } from "./contexts/AuthContext";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
+import { Routes, Route } from "react-router-dom";
+import { Fragment, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Navigation from "./components/navigation/Navigation";
+import SignIn from "./pages/signin/SignIn";
+import SignUp from "./pages/signup/SignUp";
+import UserProfile from "./pages/userprofile/UserProfile";
+import {
+  onAuthStateChangeListener,
+  createUserDocumentFromAuth,
+} from "./utils/firebase/firebase.utils";
+import GlobalStyles from "./GlobalStyles";
+import { setCurrentUser } from "./store/user/user.actions";
+import Details from "./pages/detail/Details";
+import MyList from "./pages/mylist/MyList";
 
-const darkTheme = createTheme({
-  palette: {
-    mode: "dark",
-  },
-});
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChangeListener((user) => {
+      if (user) {
+        createUserDocumentFromAuth(user);
+      }
+      dispatch(setCurrentUser(user));
+    });
+
+    return unsubscribe;
+  }, [dispatch]);
+
   return (
-    <AuthProvider>
-      <ThemeProvider theme={darkTheme}>
-        <CssBaseline />
-        <BrowserRouter>
-          <Router />
-        </BrowserRouter>
-      </ThemeProvider>
-    </AuthProvider>
+    <Fragment>
+      <GlobalStyles />
+      <Routes>
+        <Route path="/" element={<Navigation />}>
+          <Route path="login" element={<SignIn />} />
+          <Route path="signup" element={<SignUp />} />
+        </Route>
+        <Route path="browse" element={<UserProfile />}>
+          <Route path=":id" element={<Details />} />
+        </Route>
+        <Route path="mylist" element={<MyList />} />
+      </Routes>
+      <ToastContainer />
+    </Fragment>
   );
 }
 
