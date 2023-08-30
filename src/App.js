@@ -1,20 +1,42 @@
-import "./App.scss";
-import Home from "./pages/home/Home";
-import Register from "./pages/register/Register";
-import Login from "./pages/login/Login";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+import { useSelector } from "react-redux";
+import Nav from "./layouts/Nav";
+import Login from "./components/Login";
+import Home from "./components/Home";
+import Search from "./components/Search";
+import Error from "./components/Error";
+import Profile from "./components/Profile";
+import Detail from "./components/Detail";
+import SortFilter from "./components/SortFilter";
+import About from "./components/About";
 
 function App() {
+  const theme = useSelector((state) => state.theme);
+  const login = useSelector((state) => state.login);
+
   return (
-    <BrowserRouter>
-      <div className="app">
-        <Routes>
-          <Route path="/" element={<Register />} />
-          <Route path="/main" element={<Home />} />
-          <Route path="/signup" element={<Login />} />
-        </Routes>
+    <>
+      <div className={` ${theme ? "bg-dark" : ""} `}>
+        <Nav />
+        {login ? (
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/search" element={<Search />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/detail/:id" element={<Detail />} />
+            <Route path="/sort-filter/:category" element={<SortFilter />} />
+            <Route path="*" element={<Error />} />
+          </Routes>
+        ) : (
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="*" element={<Error />} />
+          </Routes>
+        )}
       </div>
-    </BrowserRouter>
+    </>
   );
 }
 
