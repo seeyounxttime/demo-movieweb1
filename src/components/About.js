@@ -35,20 +35,6 @@ function About() {
           <li>React Persist</li>
           <li>React Router Dom</li>
         </ul>
-
-        <h4>Install - Run</h4>
-        <div class="card">
-          <div class="card-body fw-bold text-dark">
-            git clone https://github.com/nejlasahin/movie-app-with-react.git{" "}
-            <br />
-            <br />
-            $ cd movie-app-with-react
-            <br />
-            <br />
-            $ npm install <br />
-            $ npm start <br />
-          </div>
-        </div>
       </div>
     </>
   );

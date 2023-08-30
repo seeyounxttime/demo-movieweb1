@@ -44,7 +44,7 @@ function Nav() {
               height="32"
               className="d-inline-block align-text-top me-2"
             />
-            144p
+            Movie Play 
           </Link>
           <button
             className="navbar-toggler"
