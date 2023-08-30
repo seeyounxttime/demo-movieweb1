@@ -19,7 +19,7 @@ function MovieCredit({ id }) {
           setLoading(false);
         });
     }, 500);
-  }, []);
+  }, [id]);
 
   if (loading) {
     return (
